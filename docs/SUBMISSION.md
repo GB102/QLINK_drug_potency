@@ -52,7 +52,7 @@ first; this build added the Q-LINK implementation, the corrected dataset and sca
 controls, the screening metrics, the gradient and cost analysis, and this demo. Full attribution in
 `docs/CHANGELOG.md`.
 
-Repository: `<REPO URL>` · MIT licensed · Theme: Quantum Impact
+Repository: https://github.com/JuL-sezaR/QLINK_drug_potency · MIT licensed · Theme: Quantum Impact
 
 *This effort is supported by Qollab & IonQ.*
 
@@ -108,7 +108,7 @@ believable — and a cost result we'd want to test at depth. Supported by Qollab
 ## 4. Before you submit — checklist
 
 - [ ] **Push the branch and make the repository public**, no sign-in, MIT licensed, no secrets. Replace
-      `<REPO URL>` above.
+      https://github.com/JuL-sezaR/QLINK_drug_potency above.
 - [ ] **Upload `qollab_combined/` as the Qollab project** (15 files, 10 MB, largest file 1.42 MB).
       It holds both demos behind one `main.py`: `demo = "qlink"` (the main demo) and
       `demo = "hybrids"` (the team's seven BasicEntangler models on the three-class task).

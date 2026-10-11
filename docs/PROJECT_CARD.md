@@ -223,6 +223,6 @@ dataset and scaffold split, the matched controls, the screening metrics, the gra
 and this demo. Full attribution and build-window disclosure: `docs/CHANGELOG.md`.
 
 Data: ChEMBL (EMBL-EBI), CC BY-SA 3.0. Libraries: Qiskit, Qiskit Aer, PyTorch, RDKit, scikit-learn.
-MIT licensed. Repository: `<REPO URL>`
+MIT licensed. Repository: https://github.com/JuL-sezaR/QLINK_drug_potency
 
 *This effort is supported by Qollab & IonQ.*
