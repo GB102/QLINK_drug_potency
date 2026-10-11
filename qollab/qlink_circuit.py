@@ -65,23 +65,36 @@ def head(z_values, post_w, post_b):
     return 1.0 / (1.0 + math.exp(-logit)), logit
 
 
-def measured_circuit(qc, xs, ws, angles, weights, n_data):
-    """Bind one compound's angles and the trained weights, then measure the data qubits in the Z basis."""
-    bound = qc.assign_parameters({**{p: float(v) for p, v in zip(xs, angles)},
-                                  **{p: float(v) for p, v in zip(ws, weights)}})
-    out = QuantumCircuit(bound.num_qubits, n_data)
-    out.compose(bound, inplace=True)
-    out.measure(range(n_data), range(n_data))
+def packed_circuit(qc, xs, ws, angle_rows, weights, n_data):
+    """One circuit holding several compounds side by side, each on its own block of qubits.
+
+    IonQ accepts a single circuit per job, so a run that measures N compounds has to put all N in one
+    circuit. The blocks share no gates, so the N sub-circuits stay independent and each shot yields an
+    independent sample for every compound; per-compound statistics come from marginalising the bitstring.
+    Compound c occupies qubits [c*nq, (c+1)*nq) and classical bits [c*n_data, (c+1)*n_data).
+    """
+    nq = qc.num_qubits
+    n = len(angle_rows)
+    out = QuantumCircuit(nq * n, n_data * n)
+    for c, angles in enumerate(angle_rows):
+        bound = qc.assign_parameters({**{p: float(v) for p, v in zip(xs, angles)},
+                                      **{p: float(v) for p, v in zip(ws, weights)}})
+        base = c * nq
+        out.compose(bound, qubits=range(base, base + nq), inplace=True)
+        out.measure(range(base, base + n_data), range(c * n_data, c * n_data + n_data))
     return out
 
 
-def z_from_counts(counts, n_data):
-    """<Z_i> for each data qubit from measurement counts. Qiskit bitstrings are little-endian."""
+def z_from_counts(counts, n_data, offset=0):
+    """<Z_i> for data qubits from measurement counts. Qiskit bitstrings are little-endian.
+
+    `offset` selects one compound's block of classical bits inside a packed circuit.
+    """
     total = sum(counts.values())
     z = [0.0] * n_data
     for bits, c in counts.items():
         bits = bits.replace(" ", "")
         for i in range(n_data):
-            bit = int(bits[len(bits) - 1 - i])
+            bit = int(bits[len(bits) - 1 - (offset + i)])
             z[i] += c * (1 - 2 * bit)
     return [v / total for v in z], total

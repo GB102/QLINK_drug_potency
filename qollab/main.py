@@ -7,6 +7,11 @@ What this run does
   4. re-runs a small selectable batch of compounds on the backend you picked in the Select QPU dialog,
      with the shot count you set, and shows the sampled expectations next to the exact ones
 
+IonQ accepts one circuit per job, so step 4 packs every compound it measures into a single circuit,
+each compound on its own block of qubits. Raise `backend_batch` to measure more (bounded by the
+backend's qubit count); lower `shots` if a noise-model backend runs slowly, since those simulate
+once per shot.
+
 Everything printed under "live backend run" is executed during this run. Nothing is cached.
 Trained weights are loaded from model_qlink.json; the training command is in the project README.
 
@@ -14,7 +19,7 @@ This effort is supported by Qollab & IonQ.
 """
 import json
 
-from qlink_circuit import (build_from_spec, encode_angles, head, measured_circuit,
+from qlink_circuit import (build_from_spec, encode_angles, head, packed_circuit,
                            z_from_counts)
 
 MODEL_FILE = "model_qlink.json"
@@ -67,7 +72,7 @@ def print_rows(rows):
         print(f"  {name:<{w}}{k:>4}{hits:>6}{prec:>9.3f}{ef:>7.2f}{rec:>8.3f}")
 
 
-def main(shots: int = 1024, backend_batch: int = 8, budget_percent: int = 10):
+def main(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
     spec = load_json(MODEL_FILE)
     pool = load_json(POOL_FILE)
     classical = load_json(CLASSICAL_FILE)
@@ -154,25 +159,50 @@ def main(shots: int = 1024, backend_batch: int = 8, budget_percent: int = 10):
     print("-" * 78)
     name = getattr(backend, "name", None)                                        # noqa: F821
     name = name() if callable(name) else (name or type(backend).__name__)        # noqa: F821
+
+    # Two submission shapes, because the backends differ in what they accept and what they cost.
+    #   IonQ      : one circuit per job, so every compound goes into a single packed circuit.
+    #   local sims: many circuits per run, and Qiskit's BasicSimulator simulates once per shot, so a
+    #               wide packed circuit would cost 2^(extra qubits) more per shot. Keep them separate.
+    per_compound = qc.num_qubits
+    is_ionq = "ionq" in str(name).lower()
+    ceiling = getattr(backend, "num_qubits", None)                               # noqa: F821
+    if not isinstance(ceiling, int) or ceiling < per_compound:
+        ceiling = per_compound
     batch = max(1, min(backend_batch, n))
+    if is_ionq:
+        batch = min(batch, ceiling // per_compound)
     picked = rank_by(q_scores)[:batch]
-    circuits = [measured_circuit(qc, xs, ws,
-                                 encode_angles(compounds[i]["features"], spec["pre_w"], spec["pre_b"],
-                                               spec["angle_scale"]),
-                                 weights, n_data) for i in picked]
+    angle_rows = [encode_angles(compounds[i]["features"], spec["pre_w"], spec["pre_b"],
+                                spec["angle_scale"]) for i in picked]
+
     print(f"  backend        : {name}")
-    print(f"  shots          : {shots} per circuit")
-    print(f"  circuits       : {batch} (one per compound, submitted as a single job)")
+    print(f"  shots          : {shots}")
+    print(f"  compounds      : {batch}")
+    if is_ionq:
+        payload = packed_circuit(qc, xs, ws, angle_rows, weights, n_data)
+        print(f"  submission     : 1 circuit of {payload.num_qubits} qubits "
+              f"({per_compound} per compound, side by side), 1 job")
+        print(f"                   IonQ accepts one circuit per job, so the compounds share a circuit;")
+        print(f"                   the blocks are unentangled, so each shot samples all of them at once.")
+        if batch < min(backend_batch, n):
+            print(f"                   (requested {backend_batch}; backend reports {ceiling} qubits)")
+    else:
+        payload = [packed_circuit(qc, xs, ws, [row], weights, n_data) for row in angle_rows]
+        print(f"  submission     : {batch} circuits of {per_compound} qubits, 1 job")
     print(f"  results        : newly executed in this run, not cached")
     print("  running ...")
-    job = backend.run(circuits, shots=shots)                                     # noqa: F821
+    job = backend.run(payload, shots=shots)                                      # noqa: F821
     result = job.result()
+    counts = result.get_counts()
 
     print(f"  {'ChEMBL id':<16}{'exact <Z0..Zn>':<34}{'sampled':>9}{'exact':>9}{'|diff|':>8}")
     max_diff = 0.0
     for j, i in enumerate(picked):
-        counts = result.get_counts(j) if batch > 1 else result.get_counts()
-        z_s, total = z_from_counts(counts, n_data)
+        # packed: one counts dict, compound j occupying its own block of classical bits
+        # separate: one counts dict per circuit, each with its own 4 bits at offset 0
+        c_j = counts if is_ionq else (counts[j] if isinstance(counts, list) else counts)
+        z_s, total = z_from_counts(c_j, n_data, offset=j * n_data if is_ionq else 0)
         s_sampled = head(z_s, spec["post_w"], spec["post_b"])[0]
         s_exact = q_scores[i]
         max_diff = max(max_diff, abs(s_sampled - s_exact))
