@@ -197,7 +197,7 @@ def main(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
     counts = result.get_counts()
 
     print(f"  {'ChEMBL id':<16}{'exact <Z0..Zn>':<34}{'sampled':>9}{'exact':>9}{'|diff|':>8}")
-    max_diff = 0.0
+    max_diff, signed = 0.0, []
     for j, i in enumerate(picked):
         # packed: one counts dict, compound j occupying its own block of classical bits
         # separate: one counts dict per circuit, each with its own 4 bits at offset 0
@@ -206,10 +206,23 @@ def main(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
         s_sampled = head(z_s, spec["post_w"], spec["post_b"])[0]
         s_exact = q_scores[i]
         max_diff = max(max_diff, abs(s_sampled - s_exact))
+        signed.append(s_sampled - s_exact)
         zs = " ".join(f"{v:+.2f}" for v in q_z[i])
         print(f"  {compounds[i]['id']:<16}{zs:<34}{s_sampled:>9.3f}{s_exact:>9.3f}"
               f"{abs(s_sampled - s_exact):>8.3f}")
-    print(f"  largest score difference from finite sampling: {max_diff:.3f} at {shots} shots")
+    # On a local ideal simulator the only deviation is finite sampling. IonQ's remote simulators apply a
+    # device noise model, which shrinks |<Z>| toward 0 and so pulls every score toward the head's bias --
+    # a one-directional shift, unlike the symmetric scatter of shot noise. Name the cause correctly.
+    shot_sigma = 1.0 / (shots ** 0.5)
+    mean_signed = sum(signed) / len(signed)
+    if is_ionq:
+        print(f"  largest score shift vs exact: {max_diff:.3f}  (shot noise + IonQ's device noise model;")
+        print(f"                                1-sigma shot noise alone would be about {shot_sigma:.3f})")
+        if mean_signed < -shot_sigma:
+            print(f"  every score moved down (mean {mean_signed:+.3f}): that is the noise model damping")
+            print(f"  the expectation values, not finite sampling. Ranking survives it; calibration does not.")
+    else:
+        print(f"  largest score difference from finite sampling: {max_diff:.3f} at {shots} shots")
     order_s = [compounds[i]['id'] for i in picked]
     print(f"  shot-based run reproduced the exact top-{batch} ordering: "
           f"{order_s == [compounds[i]['id'] for i in rank_by(q_scores)[:batch]]}")
