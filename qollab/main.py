@@ -13,7 +13,6 @@ Trained weights are loaded from model_qlink.json; the training command is in the
 This effort is supported by Qollab & IonQ.
 """
 import json
-import math
 
 from qlink_circuit import (build_from_spec, encode_angles, head, measured_circuit,
                            z_from_counts)
