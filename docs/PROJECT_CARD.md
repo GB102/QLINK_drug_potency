@@ -142,6 +142,10 @@ Every score moved **down**, by ~3× more than 1-sigma shot noise (0.031) would e
 shift is the device noise model damping ⟨Z⟩ toward zero, which drags every score toward the head's bias.
 Finite sampling would scatter symmetrically; this does not.
 
+The `hybrids` demo reproduces the effect independently on a 28-qubit circuit: |⟨Z⟩| is smaller on the
+backend than exact for two of its three models, and all three backend predictions still match the exact
+ones. Both run logs are saved in [`results/ionq/`](../results/ionq/).
+
 **And the ranking was unchanged.** The compounds came back in the same order. The shortlist you'd send to
 the bench is identical. That is the practical case for screening as a near-term quantum application: the
 noise destroys the scores as probabilities while leaving the decision intact.
