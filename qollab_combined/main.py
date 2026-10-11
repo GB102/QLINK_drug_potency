@@ -73,7 +73,7 @@ def main(demo: str = "qlink",
     choice = (demo or "").strip().lower()
     if choice in ("qlink", "q-link", "screen", "1"):
         # `compounds` is how many are measured on the backend; `part` and the two index fields are unused.
-        return qlink_demo.run(shots=shots, backend_batch=compounds, budget_percent=10)
+        return qlink_demo.run(backend, shots=shots, backend_batch=compounds, budget_percent=10)
     if choice in ("hybrids", "hybrid", "3class", "sweep", "2"):
         return run_hybrids(shots, part, molecules_per_model, start_index)
     print(f"Unknown demo {demo!r}. Set demo to \"qlink\" or \"hybrids\" under Run settings.")

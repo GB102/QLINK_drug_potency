@@ -72,7 +72,9 @@ def print_rows(rows):
         print(f"  {name:<{w}}{k:>4}{hits:>6}{prec:>9.3f}{ef:>7.2f}{rec:>8.3f}")
 
 
-def run(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
+def run(backend, shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
+    # `backend` is passed in by main.py. Qollab pre-creates it in the top-level module's globals only,
+    # so a module other than main.py cannot see it as a global and has to receive it as an argument.
     spec = load_json(MODEL_FILE)
     pool = load_json(POOL_FILE)
     classical = load_json(CLASSICAL_FILE)
@@ -157,8 +159,8 @@ def run(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
     print("-" * 78)
     print("Step 3  Live backend run: the same quantum inference path, executed now on your backend")
     print("-" * 78)
-    name = getattr(backend, "name", None)                                        # noqa: F821
-    name = name() if callable(name) else (name or type(backend).__name__)        # noqa: F821
+    name = getattr(backend, "name", None)
+    name = name() if callable(name) else (name or type(backend).__name__)
 
     # Two submission shapes, because the backends differ in what they accept and what they cost.
     #   IonQ      : one circuit per job, so every compound goes into a single packed circuit.
@@ -166,7 +168,7 @@ def run(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
     #               wide packed circuit would cost 2^(extra qubits) more per shot. Keep them separate.
     per_compound = qc.num_qubits
     is_ionq = "ionq" in str(name).lower()
-    ceiling = getattr(backend, "num_qubits", None)                               # noqa: F821
+    ceiling = getattr(backend, "num_qubits", None)
     if not isinstance(ceiling, int) or ceiling < per_compound:
         ceiling = per_compound
     batch = max(1, min(backend_batch, n))
@@ -192,7 +194,7 @@ def run(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
         print(f"  submission     : {batch} circuits of {per_compound} qubits, 1 job")
     print(f"  results        : newly executed in this run, not cached")
     print("  running ...")
-    job = backend.run(payload, shots=shots)                                      # noqa: F821
+    job = backend.run(payload, shots=shots)
     result = job.result()
     counts = result.get_counts()
 
