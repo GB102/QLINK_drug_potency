@@ -1,7 +1,6 @@
 # NOTE: 'backend' is pre-created as a global variable
 # (for local testing only:  from qiskit_aer import AerSimulator;  backend = AerSimulator())
 
-import os
 import time
 import numpy as np
 import pandas as pd
@@ -11,18 +10,17 @@ from qiskit.quantum_info import Statevector
 # ---------------- Models to evaluate (edit the file names if yours differ) ----------------
 TEST_CSV = "pennylane_hybrid3_test_set_with_results.csv"     # test set saved earlier (same for all models)
 
-def _w(qubits, depth):
-    return f"hybrid_QML_3class_{qubits}qubit_{depth}depth_basic_entangler.pt"
-
+# Every weight file is named as a PLAIN STRING LITERAL. Qollab only loads a project data file when its
+# path appears literally in the source: a name built at run time (an f-string, os.path.join, +) is not
+# picked up and open() then fails with OSError errno 29. Do not refactor these into a helper.
 MODELS = [
-    {"name": "4qubit_2depth",  "weights": _w(4, 2)},
-    {"name": "4qubit_4depth",  "weights": _w(4, 4)},
-    {"name": "4qubit_8depth",  "weights": _w(4, 8)},
-    {"name": "8qubit_1depth",  "weights": _w(8, 1)},
-    {"name": "8qubit_2depth",  "weights": _w(8, 2)},
-    {"name": "8qubit_4depth",  "weights": _w(8, 4)},
-    {"name": "16qubit_1depth", "weights": _w(16, 1)},
-    # a model may use its own test file:  {"name": "...", "weights": "...", "csv": "other_test_set.csv"}
+    {"name": "4qubit_2depth",  "weights": "hybrid_QML_3class_4qubit_2depth_basic_entangler.npz"},
+    {"name": "4qubit_4depth",  "weights": "hybrid_QML_3class_4qubit_4depth_basic_entangler.npz"},
+    {"name": "4qubit_8depth",  "weights": "hybrid_QML_3class_4qubit_8depth_basic_entangler.npz"},
+    {"name": "8qubit_1depth",  "weights": "hybrid_QML_3class_8qubit_1depth_basic_entangler.npz"},
+    {"name": "8qubit_2depth",  "weights": "hybrid_QML_3class_8qubit_2depth_basic_entangler.npz"},
+    {"name": "8qubit_4depth",  "weights": "hybrid_QML_3class_8qubit_4depth_basic_entangler.npz"},
+    {"name": "16qubit_1depth", "weights": "hybrid_QML_3class_16qubit_1depth_basic_entangler.npz"},
 ]
 
 CLASS_NAMES = ["inactive", "intermediate", "active"]
@@ -47,22 +45,17 @@ def read_csv(path):
     return _CSV_CACHE[path]
 
 def load_state(path):
-    """Weights as float64 NumPy arrays: the .pt file (needs torch), else a .npz with the same name."""
-    npz = os.path.splitext(path)[0] + ".npz"
-    if os.path.exists(path):
-        try:
-            import torch
-            try:
-                obj = torch.load(path, map_location="cpu", weights_only=False)
-            except TypeError:                              # very old torch without weights_only
-                obj = torch.load(path, map_location="cpu")
-            sd = obj["state_dict"] if isinstance(obj, dict) and "state_dict" in obj else obj
-            return {k: v.detach().cpu().numpy().astype(np.float64) for k, v in sd.items()}
-        except ImportError:
-            pass
-    if os.path.exists(npz):
-        return {k: v.astype(np.float64) for k, v in np.load(npz).items()}
-    raise FileNotFoundError(f"neither {path} nor {npz} was found")
+    """Weights as float64 NumPy arrays, from a .npz (NumPy) or a .pt (needs torch) file."""
+    if path.endswith(".npz"):
+        return {k: v.astype(np.float64) for k, v in np.load(path).items()}
+    import torch
+    try:
+        obj = torch.load(path, map_location="cpu", weights_only=False)
+    except TypeError:                                  # very old torch without weights_only
+        obj = torch.load(path, map_location="cpu")
+    sd = obj["state_dict"] if isinstance(obj, dict) and "state_dict" in obj else obj
+    return {k: v.detach().cpu().numpy().astype(np.float64) for k, v in sd.items()}
+
 
 def circuit_weights(W):
     """(reps, n_qubits) circuit weights from a PennyLane ('qlayer.weights') or Qiskit ('qlayer._weights') file."""
