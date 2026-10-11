@@ -72,17 +72,43 @@ Qiskit's `BasicSimulator` simulates once *per shot*, so a wide packed circuit wo
 
 ## 4. How do I run it?
 
-**On Qollab:** press **Run**, pick a backend in the Select QPU dialog, and set shots under Run settings.
-Choose an **IonQ** remote simulator for the full effect. Parameters:
+**On Qollab:** press **Run**, pick a backend in the Select QPU dialog, and choose a demo under Run
+settings. Choose an **IonQ** remote simulator for the full effect.
+
+**This project holds two runnable demos**, selected by the `demo` field. One per run — IonQ accepts one
+job per code run, so running both at once would submit two jobs and the second would be rejected.
+
+### `demo = "qlink"` — the main demo (about 7 s on IonQ)
+
+Ranks a held-out pool of 60 real compounds with the Q-LINK hybrid, compares it against a random forest
+and random picking, shows the shortlist with its true assay labels, then runs the same quantum inference
+path live on your backend and prints sampled expectation values beside exact ones.
 
 | parameter | default | what it does |
 |---|---|---|
-| `shots` | 1024 | shots per run. IonQ's noise-model simulators simulate once per shot — lower this if a run is slow. |
-| `backend_batch` | 3 | compounds measured on the backend. On IonQ this sets the packed circuit's width (3 × 5 = 15 qubits, inside Forte 1's 29). |
+| `shots` | 1024 | shots per run. IonQ's noise-model simulators simulate once per shot. |
+| `compounds` | 3 | compounds measured on the backend. Sets the packed circuit's width (3 × 5 = 15 qubits, inside Forte 1's 29). |
 | `budget_percent` | 10 | the assay budget K, as a percentage of the pool. |
 
-Trained weights are loaded from `model_qlink.json` so the browser doesn't retrain — the page says so, and
-everything printed under the live-run heading is executed in that run, never cached.
+### `demo = "hybrids"` — the companion sweep (about 11 min on IonQ at 28 qubits)
+
+Scores the team's seven earlier BasicEntangler hybrids (4, 8 and 16 qubits, 1–8 reps) on the three-class
+task: exact expectation values for all seven, then a live backend run. The seven do not fit in one
+29-qubit circuit, so on IonQ it runs in two parts.
+
+| parameter | default | what it does |
+|---|---|---|
+| `shots` | 1024 | shots per run. |
+| `part` | 0 | which group of models goes to the backend. Run `0`, then `1`, to cover all seven. |
+| `molecules_per_model` | 1 | test molecules per model in the backend circuit. |
+| `start_index` | 0 | first test molecule of the backend slice. |
+
+Be aware of the cost: these runs are wide, and IonQ's noise-model simulators simulate once per **shot**,
+so a 28-qubit circuit took 682 s against the qlink demo's 7 s at the same shot count. Width is what makes
+a run expensive here, not the shot count.
+
+Trained weights are loaded from the project files so the browser doesn't retrain — the page says so, and
+everything printed under a live-run heading is executed in that run, never cached.
 
 **Locally**, the full benchmark is `pip install -r requirements.txt` then ten commands listed in the
 README — about 9 minutes end to end on 24 threads, including the training of all 45 runs.
@@ -142,6 +168,10 @@ Every score moved **down**, by ~3× more than 1-sigma shot noise (0.031) would e
 shift is the device noise model damping ⟨Z⟩ toward zero, which drags every score toward the head's bias.
 Finite sampling would scatter symmetrically; this does not.
 
+The `hybrids` demo reproduces the effect independently on a 28-qubit circuit: |⟨Z⟩| is smaller on the
+backend than exact for two of its three models, and all three backend predictions still match the exact
+ones. Both run logs are saved in [`results/ionq/`](../results/ionq/).
+
 **And the ranking was unchanged.** The compounds came back in the same order. The shortlist you'd send to
 the bench is identical. That is the practical case for screening as a near-term quantum application: the
 noise destroys the scores as probabilities while leaving the decision intact.
@@ -181,6 +211,11 @@ since it means 29 of 36 assays hit.
 implementation at [AARC-lab/DCAS_2026_QLINK](https://github.com/AARC-lab/DCAS_2026_QLINK). We read both to
 implement the method faithfully in Qiskit; we copied no code (that repo shows an MIT badge but ships no
 LICENSE file). The sparse-messenger variant, the screening benchmark and this analysis are ours.
+
+The second demo, `demo = "hybrids"`, is our teammate's earlier sweep — seven BasicEntangler hybrids on
+the three-class task — and it reaches the same conclusion from the other direction: only one of the seven
+beats the 0.7829 majority-class rate, and the best model by accuracy is not the best by balanced
+accuracy. That result is what moved this project off accuracy and onto enrichment.
 
 Built on our teammate's prior work in the same repository — the ChEMBL pull, the PaDEL fingerprints, the
 classical DNN and the BasicEntangler hybrids. This build added the Q-LINK implementation, a corrected

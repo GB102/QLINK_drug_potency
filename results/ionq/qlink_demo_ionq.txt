@@ -1,0 +1,46 @@
+Qollab playground, backend: IonQ Forte 1 (remote simulator), 11 Oct 2026
+Project: qollab_combined/   Run settings: demo="qlink", shots=1024, compounds=3
+==============================================================================
+Q-Link Screen: can a messenger qubit improve compound prioritization?
+==============================================================================
+Target      : HIV-1 protease (ChEMBL CHEMBL243), enzymatic IC50
+Screening   : top 10% -- K = 6 of 60 compounds.
+Pool        : held-out scaffold test split, seed 2026
+Label       : potent = median IC50 <= 10 nM (pIC50 >= 8)
+Actives     : 18 of 60 compounds (30.0%)
+Model       : qlink (4 blocks, 5 qubits = 4 data + 1 messenger)
+              run id potent__qlink__d4__s0
+              compiled for IonQ's native set: depth 79, 44 two-qubit gates
+
+Step 1  Rank the full pool with exact expectation values
+  model                                 K  hits   prec@K   EF@K  recall
+  Q-LINK hybrid (qlink)                 6     4    0.667   2.22   0.222
+  classical: random forest, full FP     6     4    0.667   2.22   0.222
+  random picking                        6     3    0.500   1.67   0.167
+
+Step 2  Shortlist (top 6 by Q-LINK score), with known assay labels
+    1  CHEMBL269252       0.971    7.85  not potent
+    2  CHEMBL52702        0.961   10.10  POTENT
+    3  CHEMBL360212       0.957   10.52  POTENT
+    4  CHEMBL151663       0.947    8.46  POTENT
+    5  CHEMBL294635       0.921    7.00  not potent
+    6  CHEMBL295777       0.886    8.94  POTENT
+  recovered 4 of 18 potent compounds in 6 assay slots (random picking: about 1.8)
+
+Step 3  Live backend run
+  backend        : ionq_simulator
+  shots          : 1024
+  compounds      : 3
+  submission     : 1 circuit of 15 qubits (5 per compound, side by side), 1 job
+  results        : newly executed in this run, not cached
+  running ...
+Circuit execution time: 7000ms
+  ChEMBL id       exact <Z0..Zn>                      sampled    exact  |diff|
+  CHEMBL269252    +0.38 +0.30 -0.69 -0.43               0.868    0.971   0.103
+  CHEMBL52702     +0.37 +0.18 -0.67 -0.43               0.857    0.961   0.104
+  CHEMBL360212    +0.31 +0.24 -0.71 -0.33               0.852    0.957   0.104
+  largest score shift vs exact: 0.104  (shot noise + IonQ's device noise model;
+                                1-sigma shot noise alone would be about 0.031)
+  every score moved down (mean -0.104): that is the noise model damping
+  the expectation values, not finite sampling. Ranking survives it; calibration does not.
+  shot-based run reproduced the exact top-3 ordering: True

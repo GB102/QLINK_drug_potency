@@ -1,0 +1,55 @@
+Qollab playground, backend: IonQ Forte 1 (remote simulator), 11 Oct 2026
+Project: qollab_combined/   Run settings: demo="hybrids", shots=1024, part=0
+==============================================================================
+Step 1  Exact (noiseless) accuracy per model, computed locally
+==============================================================================
+  4qubit_2depth     4 qubits, 2 reps | exact accuracy 0.7442 (288/387) | 0.2s
+  4qubit_4depth     4 qubits, 4 reps | exact accuracy 0.7494 (290/387) | 0.4s
+  4qubit_8depth     4 qubits, 8 reps | exact accuracy 0.8036 (311/387) | 0.6s
+  8qubit_1depth     8 qubits, 1 reps | exact accuracy 0.7907 (306/387) | 0.3s
+  8qubit_2depth     8 qubits, 2 reps | exact accuracy 0.7390 (286/387) | 0.4s
+  8qubit_4depth     8 qubits, 4 reps | exact accuracy 0.7778 (301/387) | 0.7s
+  16qubit_1depth   16 qubits, 1 reps | exact accuracy 0.7700 (298/387) | 8.8s
+
+==============================================================================
+Step 2  Backend plan (one job per code run)
+==============================================================================
+  backend ionq_simulator | qubits available: 29 | shots 1024 | molecules per model: up to 1
+  part 0: 4qubit_2depth (4q), 8qubit_1depth (8q), 16qubit_1depth (16q)  [28 qubits]   <-- this run
+  part 1: 4qubit_4depth (4q), 4qubit_8depth (4q), 8qubit_2depth (8q), 8qubit_4depth (8q)  [24 qubits]
+
+==============================================================================
+Step 3  Live backend run (executed now): part 0, 3 models, 3 molecule blocks
+==============================================================================
+  submission : 1 circuit of 28 qubits, 120 operations, 1 job
+  running ...
+Circuit execution time: 682000ms
+
+  1-sigma shot noise on a single <Z> is about 0.031
+
+  model             backend acc  exact acc   agree  mean|dZ|
+  4qubit_2depth             0/1        0/1     1/1    0.0475
+      #0    0                true inactive     exact intermediate backend intermediate
+      note: |<Z>| is smaller on the backend than exact (0.230 vs 0.266): consistent with a
+            device noise model, not just finite sampling
+  8qubit_1depth             1/1        1/1     1/1    0.0306
+      #0    0                true inactive     exact inactive     backend inactive
+  16qubit_1depth            0/1        0/1     1/1    0.0388
+      #0    0                true inactive     exact intermediate backend intermediate
+      note: |<Z>| is smaller on the backend than exact (0.218 vs 0.256): consistent with a
+            device noise model, not just finite sampling
+
+==============================================================================
+SUMMARY  -- exact accuracy on the full three-class test set
+==============================================================================
+  model                 accuracy    correct  vs trivial
+  4 qubits, 8 reps        0.8036    311/387     +0.0207
+  8 qubits, 1 reps        0.7907    306/387     +0.0078
+  8 qubits, 4 reps        0.7778    301/387     -0.0051
+  16 qubits, 1 reps       0.7700    298/387     -0.0129
+  4 qubits, 4 reps        0.7494    290/387     -0.0335
+  4 qubits, 2 reps        0.7442    288/387     -0.0387
+  8 qubits, 2 reps        0.7390    286/387     -0.0439
+
+  Accuracy note: 0.7829 of this test set is "active", so a model that answers "active" for
+  every molecule scores that. Only one of the seven models beats it.

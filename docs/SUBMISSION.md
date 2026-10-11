@@ -109,7 +109,11 @@ believable — and a cost result we'd want to test at depth. Supported by Qollab
 
 - [ ] **Push the branch and make the repository public**, no sign-in, MIT licensed, no secrets. Replace
       `<REPO URL>` above.
-- [ ] **Upload `qollab/` as the Qollab project** (6 files, all well under 2 MB).
+- [ ] **Upload `qollab_combined/` as the Qollab project** (15 files, 10 MB, largest file 1.42 MB).
+      It holds both demos behind one `main.py`: `demo = "qlink"` (the main demo) and
+      `demo = "hybrids"` (the team's seven BasicEntangler models on the three-class task).
+      One demo per run — IonQ accepts one job per run, so running both would submit two.
+      `qollab/` (Q-Link Screen only) and `qollab/ramqolab/` (the sweep only) remain as fallbacks.
 - [ ] **Press Run on an IonQ simulator and confirm it completes.** This is required and has not been done
       from this machine — see "Not verified" below.
 - [ ] **Publish the project under MIT on Qollab** before 19:00 ET.
