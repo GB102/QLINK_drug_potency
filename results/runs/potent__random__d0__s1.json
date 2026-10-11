@@ -1,0 +1,30 @@
+{
+  "task": "potent",
+  "model": "random",
+  "n_blocks": 0,
+  "seed": 1,
+  "features": "none",
+  "selection_metric": "none",
+  "test_precomputed": {
+    "K": 36,
+    "frac": 0.1,
+    "n_pool": 360,
+    "n_actives_pool": 133,
+    "hits@K": 11,
+    "precision@K": 0.3055555555555556,
+    "recall@K": 0.08270676691729323,
+    "EF": 0.8270676691729324,
+    "EF_max": 2.706766917293233,
+    "ties_at_cut": 1,
+    "PR_AUC": 0.3719655911041294,
+    "ROC_AUC": 0.5145573184061475,
+    "prevalence": 0.36944444444444446,
+    "EF@5%": 1.3533834586466165,
+    "EF@20%": 0.9022556390977443
+  },
+  "params": {
+    "total": 0,
+    "quantum": 0
+  },
+  "wall_clock_s": 0.0
+}

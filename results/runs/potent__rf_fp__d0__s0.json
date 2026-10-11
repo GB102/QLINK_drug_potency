@@ -1,0 +1,37 @@
+{
+  "task": "potent",
+  "model": "rf_fp",
+  "n_blocks": 0,
+  "seed": 0,
+  "features": "ecfp4_2048 + pubchem_881 (full fingerprints)",
+  "selection_metric": "PR_AUC",
+  "best_val": 0.9128772608862392,
+  "config": {
+    "n_estimators": 300,
+    "max_features": "sqrt",
+    "min_samples_leaf": 3
+  },
+  "val": {
+    "K": 36,
+    "frac": 0.1,
+    "n_pool": 360,
+    "n_actives_pool": 167,
+    "hits@K": 36,
+    "precision@K": 1.0,
+    "recall@K": 0.2155688622754491,
+    "EF": 2.155688622754491,
+    "EF_max": 2.155688622754491,
+    "ties_at_cut": 1,
+    "PR_AUC": 0.9128772608862392,
+    "ROC_AUC": 0.9177189662126524,
+    "prevalence": 0.4638888888888889,
+    "EF@5%": 2.155688622754491,
+    "EF@20%": 2.155688622754491
+  },
+  "params": {
+    "total": 93948,
+    "quantum": 0
+  },
+  "wall_clock_s": 0.32,
+  "grid_size": 8
+}

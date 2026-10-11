@@ -1,0 +1,27 @@
+{
+  "task": "class3",
+  "model": "rf_fp",
+  "n_blocks": 0,
+  "seed": 0,
+  "features": "ecfp4_2048 + pubchem_881 (full fingerprints)",
+  "selection_metric": "macro_F1",
+  "best_val": 0.6057760882300501,
+  "config": {
+    "n_estimators": 600,
+    "max_features": 0.05,
+    "min_samples_leaf": 3
+  },
+  "val": {
+    "accuracy": 0.8555555555555555,
+    "majority_class_rate": 0.8083333333333333,
+    "balanced_accuracy": 0.6171312205676466,
+    "macro_F1": 0.6057760882300501,
+    "ROC_AUC_ovr": 0.8934576395279316
+  },
+  "params": {
+    "total": 162696,
+    "quantum": 0
+  },
+  "wall_clock_s": 0.55,
+  "grid_size": 8
+}

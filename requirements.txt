@@ -1,0 +1,9 @@
+# Full experiment pipeline (local). The Qollab demo needs only qollab/requirements.txt.
+numpy>=2.0
+pandas>=2.0
+scikit-learn>=1.5
+torch>=2.4
+qiskit>=2.0,<3.0
+qiskit-aer>=0.15
+rdkit>=2024.3
+matplotlib>=3.8

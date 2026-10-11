@@ -1,0 +1,53 @@
+{
+  "source": "ChEMBL web resource client, target CHEMBL243 (HIV-1 protease), standard_type=IC50",
+  "raw_file": "Dataset\\csv_files\\hiv1_protease_01_bioactivity_raw.csv",
+  "raw_rows": 3555,
+  "after_nM_equals_relation": 3149,
+  "after_drop_validity_flagged": 3100,
+  "after_enzymatic_only": 2914,
+  "after_rdkit_parse": 2914,
+  "unique_compounds_median_aggregated": 2403,
+  "compounds_with_spread_gt_1_log": 87,
+  "dropped_no_padel_fingerprint": 0,
+  "final_compounds": 2403,
+  "class3_counts": {
+    "inactive": 146,
+    "intermediate": 330,
+    "active": 1927
+  },
+  "potent_prevalence": 0.3974,
+  "train_n": 1683,
+  "train_potent": 655,
+  "train_class3": [
+    104,
+    221,
+    1358
+  ],
+  "val_n": 360,
+  "val_potent": 167,
+  "val_class3": [
+    15,
+    54,
+    291
+  ],
+  "test_n": 360,
+  "test_potent": 133,
+  "test_class3": [
+    27,
+    55,
+    278
+  ],
+  "compact": {
+    "method": "VarianceThreshold(0.01) -> PCA(16) -> StandardScaler, all fit on train only",
+    "pubchem_bits_kept": 386,
+    "pca_explained_variance_ratio_sum": 0.7176
+  },
+  "split": {
+    "method": "randomized Bemis-Murcko scaffold split 70/15/15",
+    "seed": 2026
+  },
+  "endpoints": {
+    "primary_screening": "potent = median pIC50 >= 8.0 (IC50 <= 10 nM)",
+    "secondary_classification": "team 3-class: inactive IC50>=10uM, intermediate, active<=1uM"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "task": "class3",
+  "model": "random",
+  "n_blocks": 0,
+  "seed": 2,
+  "features": "none",
+  "selection_metric": "none",
+  "test_precomputed": {
+    "accuracy": 0.33611111111111114,
+    "majority_class_rate": 0.7722222222222223,
+    "balanced_accuracy": 0.3586431864609323,
+    "macro_F1": 0.27597701149425286,
+    "ROC_AUC_ovr": 0.5075453131341844
+  },
+  "params": {
+    "total": 0,
+    "quantum": 0
+  },
+  "wall_clock_s": 0.0
+}

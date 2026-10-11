@@ -1,0 +1,233 @@
+{
+  "task": "class3",
+  "model": "qlink",
+  "n_blocks": 8,
+  "seed": 0,
+  "features": "compact",
+  "selection_metric": "macro_F1",
+  "best_val": 0.5341297401216297,
+  "best_epoch": 6,
+  "epochs_run": 21,
+  "optimizer_steps": 546,
+  "params": {
+    "total": 179,
+    "quantum": 96
+  },
+  "wall_clock_s": 21.15,
+  "s_per_epoch": 1.007,
+  "val": {
+    "accuracy": 0.7944444444444444,
+    "majority_class_rate": 0.8083333333333333,
+    "balanced_accuracy": 0.5577065037546137,
+    "macro_F1": 0.5341297401216297,
+    "ROC_AUC_ovr": 0.823896114523377
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.0768892421172216,
+      "val_loss": 0.9825897812843323,
+      "macro_F1": 0.48636425972170394,
+      "balanced_accuracy": 0.5628611429298714
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9838887728177584,
+      "val_loss": 0.9389758110046387,
+      "macro_F1": 0.3954118681710949,
+      "balanced_accuracy": 0.4723431335115184
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.9181885329576639,
+      "val_loss": 0.9257875680923462,
+      "macro_F1": 0.5277640056949701,
+      "balanced_accuracy": 0.5570064910271095
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.8794610018913562,
+      "val_loss": 0.9283091425895691,
+      "macro_F1": 0.5145856068339963,
+      "balanced_accuracy": 0.5446608120147639
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.8528380118883573,
+      "val_loss": 0.9406118392944336,
+      "macro_F1": 0.49579226789171543,
+      "balanced_accuracy": 0.5419371261295659
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.8514873545903426,
+      "val_loss": 0.9134171605110168,
+      "macro_F1": 0.5341297401216297,
+      "balanced_accuracy": 0.5577065037546137
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.8425363783652966,
+      "val_loss": 0.9208925366401672,
+      "macro_F1": 0.4960285496177465,
+      "balanced_accuracy": 0.5475881379661448
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.8149937482980582,
+      "val_loss": 0.9306320548057556,
+      "macro_F1": 0.491970802919708,
+      "balanced_accuracy": 0.5230622374952272
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.8065466261827029,
+      "val_loss": 0.9297901391983032,
+      "macro_F1": 0.49667616334283,
+      "balanced_accuracy": 0.5497009036527937
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.8017211166711954,
+      "val_loss": 0.9146715402603149,
+      "macro_F1": 0.5043220318710123,
+      "balanced_accuracy": 0.5391116202112766
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.8102036989652194,
+      "val_loss": 0.942355215549469,
+      "macro_F1": 0.4938778791816536,
+      "balanced_accuracy": 0.5425607738322515
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.7924497654804816,
+      "val_loss": 0.9346963763237,
+      "macro_F1": 0.5036822958593417,
+      "balanced_accuracy": 0.5537609774723177
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.7722575481121356,
+      "val_loss": 0.9442802667617798,
+      "macro_F1": 0.49942552500599113,
+      "balanced_accuracy": 0.539557082856052
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.774728910281108,
+      "val_loss": 0.9610435366630554,
+      "macro_F1": 0.5225384350771348,
+      "balanced_accuracy": 0.5652157311951126
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.7645450005164514,
+      "val_loss": 0.9627596735954285,
+      "macro_F1": 0.5024688938048968,
+      "balanced_accuracy": 0.5537609774723177
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.7568870461904086,
+      "val_loss": 0.9642059803009033,
+      "macro_F1": 0.5176467564723867,
+      "balanced_accuracy": 0.5668066692121675
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.7631547084221473,
+      "val_loss": 0.9635891914367676,
+      "macro_F1": 0.5100250874760679,
+      "balanced_accuracy": 0.5594883543337151
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.7579036584267249,
+      "val_loss": 0.9834324717521667,
+      "macro_F1": 0.5074797305013132,
+      "balanced_accuracy": 0.5571974035891561
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.746636166022374,
+      "val_loss": 0.9735270738601685,
+      "macro_F1": 0.5078977932636469,
+      "balanced_accuracy": 0.5571974035891561
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.7441131197489225,
+      "val_loss": 0.9804324507713318,
+      "macro_F1": 0.49298811824527916,
+      "balanced_accuracy": 0.5452971872215858
+    },
+    {
+      "epoch": 21,
+      "train_loss": 0.741508825467183,
+      "val_loss": 0.9777922034263611,
+      "macro_F1": 0.47914210613642116,
+      "balanced_accuracy": 0.5269568537609776
+    }
+  ],
+  "gradients": {
+    "n_init": 8,
+    "batch": 64,
+    "classical_grad_abs_mean": 0.016020136885344982,
+    "quantum_grad_abs_mean": 0.010033129714429379,
+    "quantum_grad_var": 0.00017624760221224278,
+    "quantum_grad_var_across_init": 1.720502268653945e-06,
+    "quantum_grad_max_abs": 0.05331503227353096,
+    "quantum_out_jacobian_abs_mean": 6.9574835896492
+  },
+  "hardware": {
+    "cpu": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "torch": "2.9.1+cu130"
+  },
+  "n_train": 1683,
+  "n_val": 360,
+  "n_test": 360,
+  "resources": {
+    "logical": {
+      "depth": 81,
+      "n_qubits": 5,
+      "gates": 189,
+      "two_qubit_gates": 88,
+      "ops": {
+        "rx": 36,
+        "rxx": 32,
+        "rz": 32,
+        "ry": 32,
+        "cx": 32,
+        "cz": 24,
+        "h": 1
+      }
+    },
+    "generic_cx": {
+      "depth": 201,
+      "n_qubits": 5,
+      "gates": 506,
+      "two_qubit_gates": 120,
+      "ops": {
+        "rx": 163,
+        "ry": 159,
+        "cx": 120,
+        "rz": 64
+      }
+    },
+    "ionq_native": {
+      "depth": 155,
+      "n_qubits": 5,
+      "gates": 431,
+      "two_qubit_gates": 88,
+      "ops": {
+        "rz": 144,
+        "ry": 119,
+        "rzz": 88,
+        "rx": 80
+      }
+    }
+  },
+  "circuit_evaluations": 34944
+}

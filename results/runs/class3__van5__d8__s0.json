@@ -1,0 +1,202 @@
+{
+  "task": "class3",
+  "model": "van5",
+  "n_blocks": 8,
+  "seed": 0,
+  "features": "compact",
+  "selection_metric": "macro_F1",
+  "best_val": 0.5536207764574012,
+  "best_epoch": 2,
+  "epochs_run": 17,
+  "optimizer_steps": 442,
+  "params": {
+    "total": 179,
+    "quantum": 96
+  },
+  "wall_clock_s": 13.31,
+  "s_per_epoch": 0.783,
+  "val": {
+    "accuracy": 0.7805555555555556,
+    "majority_class_rate": 0.8083333333333333,
+    "balanced_accuracy": 0.6212040218913071,
+    "macro_F1": 0.5536207764574012,
+    "ROC_AUC_ovr": 0.8205029696967133
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.0918424702607668,
+      "val_loss": 1.0216566324234009,
+      "macro_F1": 0.38328599882961195,
+      "balanced_accuracy": 0.48919434898816344
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9864221604970785,
+      "val_loss": 0.9355342388153076,
+      "macro_F1": 0.5536207764574012,
+      "balanced_accuracy": 0.6212040218913071
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.9138481364800379,
+      "val_loss": 0.9133796691894531,
+      "macro_F1": 0.4736898685829738,
+      "balanced_accuracy": 0.5031182385134275
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.8821622018630688,
+      "val_loss": 0.9065864682197571,
+      "macro_F1": 0.5195254322857504,
+      "balanced_accuracy": 0.5595647193585337
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.859464535346398,
+      "val_loss": 0.9235426187515259,
+      "macro_F1": 0.5198700217549866,
+      "balanced_accuracy": 0.55586101565483
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.8637751065767728,
+      "val_loss": 0.9165931344032288,
+      "macro_F1": 0.5139515704886729,
+      "balanced_accuracy": 0.5316023927707777
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.8559832343688378,
+      "val_loss": 0.9135549664497375,
+      "macro_F1": 0.4283978548684431,
+      "balanced_accuracy": 0.4701540028000509
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.8218346283986018,
+      "val_loss": 0.920551598072052,
+      "macro_F1": 0.4912232674663614,
+      "balanced_accuracy": 0.5296805396461753
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.7991688228570498,
+      "val_loss": 0.9118088483810425,
+      "macro_F1": 0.42939676242428537,
+      "balanced_accuracy": 0.43734249713631157
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.8024902641773224,
+      "val_loss": 0.9118056297302246,
+      "macro_F1": 0.43261210755193913,
+      "balanced_accuracy": 0.4423698612702049
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.7984193425912124,
+      "val_loss": 0.9092702269554138,
+      "macro_F1": 0.4625117385240299,
+      "balanced_accuracy": 0.48487972508591065
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.7880478501319885,
+      "val_loss": 0.9102778434753418,
+      "macro_F1": 0.4756581793943478,
+      "balanced_accuracy": 0.49289805269186715
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.7805286531264966,
+      "val_loss": 0.898284912109375,
+      "macro_F1": 0.48468663050204625,
+      "balanced_accuracy": 0.5091256204658267
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.7830155537678645,
+      "val_loss": 0.904331624507904,
+      "macro_F1": 0.48871734920099774,
+      "balanced_accuracy": 0.5139747995418098
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.7619905769824982,
+      "val_loss": 0.8974854350090027,
+      "macro_F1": 0.5263005835713462,
+      "balanced_accuracy": 0.5583301514572993
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.757598143357497,
+      "val_loss": 0.9023760557174683,
+      "macro_F1": 0.47387289477601363,
+      "balanced_accuracy": 0.49289805269186715
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.7629470160374274,
+      "val_loss": 0.9011178016662598,
+      "macro_F1": 0.4290686309566378,
+      "balanced_accuracy": 0.4361970217640321
+    }
+  ],
+  "gradients": {
+    "n_init": 8,
+    "batch": 64,
+    "classical_grad_abs_mean": 0.019862915738485754,
+    "quantum_grad_abs_mean": 0.015540655702352524,
+    "quantum_grad_var": 0.0004328511713538319,
+    "quantum_grad_var_across_init": 3.160210553687648e-06,
+    "quantum_grad_max_abs": 0.07822225242853165,
+    "quantum_out_jacobian_abs_mean": 9.509964644908905
+  },
+  "hardware": {
+    "cpu": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "torch": "2.9.1+cu130"
+  },
+  "n_train": 1683,
+  "n_val": 360,
+  "n_test": 360,
+  "resources": {
+    "logical": {
+      "depth": 42,
+      "n_qubits": 5,
+      "gates": 124,
+      "two_qubit_gates": 24,
+      "ops": {
+        "rx": 36,
+        "rz": 32,
+        "ry": 32,
+        "cz": 24
+      }
+    },
+    "generic_cx": {
+      "depth": 78,
+      "n_qubits": 5,
+      "gates": 220,
+      "two_qubit_gates": 24,
+      "ops": {
+        "rx": 84,
+        "ry": 80,
+        "rz": 32,
+        "cx": 24
+      }
+    },
+    "ionq_native": {
+      "depth": 59,
+      "n_qubits": 5,
+      "gates": 172,
+      "two_qubit_gates": 24,
+      "ops": {
+        "rz": 80,
+        "rx": 36,
+        "ry": 32,
+        "rzz": 24
+      }
+    }
+  },
+  "circuit_evaluations": 28288
+}

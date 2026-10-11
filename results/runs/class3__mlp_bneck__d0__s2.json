@@ -1,0 +1,158 @@
+{
+  "task": "class3",
+  "model": "mlp_bneck",
+  "n_blocks": 0,
+  "seed": 2,
+  "features": "compact",
+  "selection_metric": "macro_F1",
+  "best_val": 0.5084562612502562,
+  "best_epoch": 2,
+  "epochs_run": 17,
+  "optimizer_steps": 442,
+  "params": {
+    "total": 103,
+    "quantum": 0
+  },
+  "wall_clock_s": 0.27,
+  "s_per_epoch": 0.016,
+  "val": {
+    "accuracy": 0.75,
+    "majority_class_rate": 0.8083333333333333,
+    "balanced_accuracy": 0.5664502990963473,
+    "macro_F1": 0.5084562612502562,
+    "ROC_AUC_ovr": 0.817386640489746
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.0693557537519014,
+      "val_loss": 0.9830248951911926,
+      "macro_F1": 0.49498029645631125,
+      "balanced_accuracy": 0.5358533791523482
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9647929966449738,
+      "val_loss": 0.9069892764091492,
+      "macro_F1": 0.5084562612502562,
+      "balanced_accuracy": 0.5664502990963473
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.9278086034151224,
+      "val_loss": 0.9285579919815063,
+      "macro_F1": 0.5058053684135192,
+      "balanced_accuracy": 0.5554282805141911
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.9203466497934781,
+      "val_loss": 0.9209680557250977,
+      "macro_F1": 0.4887965467952721,
+      "balanced_accuracy": 0.558355606465572
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.8979153449718769,
+      "val_loss": 0.8905035853385925,
+      "macro_F1": 0.4945229127432517,
+      "balanced_accuracy": 0.5503245513554792
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.8960513793505155,
+      "val_loss": 0.9076539278030396,
+      "macro_F1": 0.4750714240075942,
+      "balanced_accuracy": 0.5285477917780323
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.8824493243144109,
+      "val_loss": 0.8943880200386047,
+      "macro_F1": 0.4780952380952381,
+      "balanced_accuracy": 0.5335751559119256
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.8713907966246972,
+      "val_loss": 0.9045486450195312,
+      "macro_F1": 0.46129100825349423,
+      "balanced_accuracy": 0.5232658775614102
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.8541024052179776,
+      "val_loss": 0.8956806659698486,
+      "macro_F1": 0.480362725552399,
+      "balanced_accuracy": 0.528102329133257
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.8488627007374396,
+      "val_loss": 0.8910860419273376,
+      "macro_F1": 0.4971394281894692,
+      "balanced_accuracy": 0.5553519154893726
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.841547049008883,
+      "val_loss": 0.8810266852378845,
+      "macro_F1": 0.49423530654783404,
+      "balanced_accuracy": 0.543706249204531
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.8334627564136798,
+      "val_loss": 0.8780015707015991,
+      "macro_F1": 0.478023478023478,
+      "balanced_accuracy": 0.532251495481736
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.8262356519699097,
+      "val_loss": 0.8653541207313538,
+      "macro_F1": 0.4787384218097701,
+      "balanced_accuracy": 0.5269568537609776
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.8299232216981741,
+      "val_loss": 0.8788129687309265,
+      "macro_F1": 0.48114377162124383,
+      "balanced_accuracy": 0.5319842178948709
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.8185850244302016,
+      "val_loss": 0.8672090172767639,
+      "macro_F1": 0.4454494342539883,
+      "balanced_accuracy": 0.48666157566501206
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.8099836936363807,
+      "val_loss": 0.8685520887374878,
+      "macro_F1": 0.4527246145667198,
+      "balanced_accuracy": 0.4951253659157439
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.8052858870763046,
+      "val_loss": 0.8681663274765015,
+      "macro_F1": 0.42987279038125603,
+      "balanced_accuracy": 0.4655848288150694
+    }
+  ],
+  "gradients": {
+    "n_init": 8,
+    "batch": 64,
+    "classical_grad_abs_mean": 0.0038503634568769485
+  },
+  "hardware": {
+    "cpu": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "torch": "2.9.1+cu130"
+  },
+  "n_train": 1683,
+  "n_val": 360,
+  "n_test": 360
+}

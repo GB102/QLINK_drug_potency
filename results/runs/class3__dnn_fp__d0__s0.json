@@ -1,0 +1,165 @@
+{
+  "task": "class3",
+  "model": "dnn_fp",
+  "n_blocks": 0,
+  "seed": 0,
+  "features": "pubchem",
+  "selection_metric": "macro_F1",
+  "best_val": 0.6373666809651787,
+  "best_epoch": 3,
+  "epochs_run": 18,
+  "optimizer_steps": 468,
+  "params": {
+    "total": 347779,
+    "quantum": 0
+  },
+  "wall_clock_s": 1.45,
+  "s_per_epoch": 0.08,
+  "val": {
+    "accuracy": 0.85,
+    "majority_class_rate": 0.8083333333333333,
+    "balanced_accuracy": 0.6649229985999746,
+    "macro_F1": 0.6373666809651787,
+    "ROC_AUC_ovr": 0.8639445186430086
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.0802095165619483,
+      "val_loss": 1.1080176830291748,
+      "macro_F1": 0.39916094115526274,
+      "balanced_accuracy": 0.4450808196512664
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.891135749908594,
+      "val_loss": 0.9562978744506836,
+      "macro_F1": 0.4602787379836844,
+      "balanced_accuracy": 0.5542700776377752
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.8272857574316171,
+      "val_loss": 1.018412470817566,
+      "macro_F1": 0.6373666809651787,
+      "balanced_accuracy": 0.6649229985999746
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.7519416144260993,
+      "val_loss": 0.8658825755119324,
+      "macro_F1": 0.5863676785156343,
+      "balanced_accuracy": 0.6687412498409063
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.7146176638511511,
+      "val_loss": 1.050243616104126,
+      "macro_F1": 0.5410604540323593,
+      "balanced_accuracy": 0.5957235586101566
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.6816107011758364,
+      "val_loss": 0.903669536113739,
+      "macro_F1": 0.5611490911147355,
+      "balanced_accuracy": 0.6118620338551609
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.6434408048024545,
+      "val_loss": 0.874045193195343,
+      "macro_F1": 0.5253980084790968,
+      "balanced_accuracy": 0.6263459335624284
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.6372469113423274,
+      "val_loss": 1.2549006938934326,
+      "macro_F1": 0.42461808631327025,
+      "balanced_accuracy": 0.5074201349115438
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.642918294438949,
+      "val_loss": 0.9017934799194336,
+      "macro_F1": 0.6104357607487121,
+      "balanced_accuracy": 0.6478299605447372
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.5681067452980921,
+      "val_loss": 1.0239474773406982,
+      "macro_F1": 0.5938921478202054,
+      "balanced_accuracy": 0.6377752322769504
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.5090390764749967,
+      "val_loss": 1.1861670017242432,
+      "macro_F1": 0.5852390286871465,
+      "balanced_accuracy": 0.6128165966653939
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.5387955812307504,
+      "val_loss": 1.1581860780715942,
+      "macro_F1": 0.5565378325555422,
+      "balanced_accuracy": 0.6225276823214968
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.5175618013510337,
+      "val_loss": 1.1286653280258179,
+      "macro_F1": 0.5845815822458159,
+      "balanced_accuracy": 0.6310805651011836
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.49962099355000716,
+      "val_loss": 1.0983190536499023,
+      "macro_F1": 0.5936862057254971,
+      "balanced_accuracy": 0.6393661702940053
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.4786781473801686,
+      "val_loss": 1.2603579759597778,
+      "macro_F1": 0.6039072039072039,
+      "balanced_accuracy": 0.6352170039455263
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.4398534595966339,
+      "val_loss": 1.2261619567871094,
+      "macro_F1": 0.5898287758752875,
+      "balanced_accuracy": 0.6155530100547283
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.42190763411613613,
+      "val_loss": 1.2692633867263794,
+      "macro_F1": 0.6014109347442681,
+      "balanced_accuracy": 0.6162530227822325
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.39912871385996157,
+      "val_loss": 1.3271136283874512,
+      "macro_F1": 0.5891379514505625,
+      "balanced_accuracy": 0.6166984854270078
+    }
+  ],
+  "gradients": {
+    "n_init": 8,
+    "batch": 64,
+    "classical_grad_abs_mean": 0.0011533053911989555
+  },
+  "hardware": {
+    "cpu": "Intel64 Family 6 Model 198 Stepping 2, GenuineIntel",
+    "torch": "2.9.1+cu130"
+  },
+  "n_train": 1683,
+  "n_val": 360,
+  "n_test": 360
+}
