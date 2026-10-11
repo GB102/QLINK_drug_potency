@@ -229,6 +229,13 @@ def run(backend, shots: int = 1024, backend_batch: int = 3, budget_percent: int 
     print(f"  shot-based run reproduced the exact top-{batch} ordering: "
           f"{order_s == [compounds[i]['id'] for i in rank_by(q_scores)[:batch]]}")
     print()
+    print("-" * 78)
+    print("Also in this project: the team's seven earlier BasicEntangler hybrids (4, 8 and 16 qubits,")
+    print("1-8 reps) scored on the three-class task, exact and on this same backend.")
+    print("  Run it with  demo = \"hybrids\"  under Run settings (on IonQ: part = 0, then part = 1).")
+    print("  Only one of those seven beats the 0.7829 majority-class rate -- the finding that moved")
+    print("  this project from accuracy to enrichment as the metric.")
+    print()
     print("Reproduce the training and the full benchmark with the commands in the project README.")
     print("A 4+1 qubit circuit is classically simulable: this is an architecture comparison on a real")
     print("assay benchmark, not a demonstration of computational quantum advantage.")
