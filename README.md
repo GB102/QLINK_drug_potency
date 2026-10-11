@@ -288,5 +288,7 @@ along with the AI-assistance disclosure and the build-window statement.
 implementation [AARC-lab/DCAS_2026_QLINK](https://github.com/AARC-lab/DCAS_2026_QLINK). We implemented
 the method from the paper and that repository; we copied none of its code.
 
+The code, analysis and text were developed with an AI coding assistant (Claude) during the build window, as the hackathon rules permit when disclosed.
+
 MIT licensed (`LICENSE`). Third-party: Qiskit (Apache-2.0), PyTorch (BSD-3), RDKit (BSD-3),
 scikit-learn (BSD-3), PaDEL-Descriptor fingerprints. Data: ChEMBL (CC BY-SA 3.0).
