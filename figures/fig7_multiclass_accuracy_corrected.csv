@@ -1,0 +1,11 @@
+# accuracy recomputed from the saved weights by qollab_combined/single_run.py
+# majority-class rate 0.7829
+model,accuracy,delta_vs_majority
+"Classical DNN",0.8036,+0.0207
+"QML 4q, 2 rep",0.7442,-0.0387
+"QML 4q, 4 rep",0.7494,-0.0335
+"QML 4q, 8 rep",0.8036,+0.0207
+"QML 8q, 1 rep",0.7907,+0.0078
+"QML 8q, 2 rep",0.7390,-0.0439
+"QML 8q, 4 rep",0.7778,-0.0051
+"QML 16q, 1 rep",0.7700,-0.0129

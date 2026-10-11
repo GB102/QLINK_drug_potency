@@ -118,9 +118,14 @@ in `results/runs/`.
 | ![recall by class](figures/recall_scores_multiclass.png) | **Fig 5** — per-class recall for every configuration. This is the view accuracy hides: the active class is recovered at 0.80–0.89 while inactive sits near 0.50 and intermediate swings from 0.44 to 0.67. The mean of the three bars is balanced accuracy, which is what separates these models. |
 | ![sampling simulator](figures/multiclass_benchmark_sampling_sim.png) | **Fig 6** — accuracy against convergence epoch on the built-in sampling simulator. The accuracies here were produced by running the saved weights (4q/2rep 74.42 %, 4q/8rep 80.36 %), and agree with the exact values recomputed in the `hybrids` demo. Read them against the 78.29 % majority-class rate: only 4q/8rep and 8q/1rep clear it. |
 
-Two further figures from the same sweep, `multiclass_benchmark_statevector_sim.png` and
-`multiclass_benchmark_ION_realdevice_sim.png`, are kept in `figures/` but are not shown here — see
-[docs/AUDIT.md](docs/AUDIT.md) for why.
+| ![corrected accuracy](figures/fig7_multiclass_accuracy_corrected.png) | **Fig 7** — the same accuracy comparison, with each value recomputed from the model's saved weights and drawn against the 78.29 % majority-class rate. Only two of the eight configurations clear it, both by under 2.1 points. |
+| ![IonQ deviation](figures/fig8_ionq_noise_deviation.png) | **Fig 8** — how far IonQ's noise model moves the expectation values. Every model sits above the 1-sigma shot-noise line, so the deviation is the device model rather than finite sampling — the same conclusion the Q-Link Screen demo reaches on a different circuit. |
+
+Figures 5 and 6 are as contributed. Figures 7 and 8 redraw two further contributed charts
+(`multiclass_benchmark_statevector_sim.png`, `multiclass_benchmark_ION_realdevice_sim.png`, both kept in
+`figures/` unchanged) after [docs/AUDIT.md §6](docs/AUDIT.md) found that the first charted the classical
+DNN's accuracy for two of the 4-qubit models, and the second measured accuracy on a single molecule per
+model and described a noise-model simulator as quantum hardware.
 
 
 ---
@@ -264,6 +269,24 @@ and the structural properties of each circuit. **9/9 pass.**
 | `figures/` | the three evidence figures, each with its CSV table view |
 | `classical/`, `quantum/`, `Dataset/`, `Test set/` | **the team's original work, unmodified** |
 
+## Credit
+
+**Our teammate** built the foundation this is extended from and contributed the companion sweep:
+the ChEMBL `CHEMBL243` pull that every number here derives from, the PaDEL PubChem fingerprints, the
+classical DNN, the BasicEntangler hybrid design (reused as the head of every quantum model in this
+project and as the `be4` baseline), the seven-configuration three-class sweep, its figures, and
+`single_run.py` — the better-engineered of the two IonQ execution paths. His sweep is also what
+redirected this project: the apparent plateau in it is what prompted the class-balance check, and
+therefore the move from accuracy to enrichment as the primary metric.
+
+**This extension** added the Q-LINK implementation and its sparse variant, the corrected dataset and
+scaffold split, the matched controls, the screening metrics, the gradient and resource analysis, and the
+Q-Link Screen demo. Component-by-component attribution is in [docs/CHANGELOG.md](docs/CHANGELOG.md),
+along with the AI-assistance disclosure and the build-window statement.
+
+**Q-LINK** is credited to its authors: [arXiv:2604.11831](https://arxiv.org/abs/2604.11831), reference
+implementation [AARC-lab/DCAS_2026_QLINK](https://github.com/AARC-lab/DCAS_2026_QLINK). We implemented
+the method from the paper and that repository; we copied none of its code.
+
 MIT licensed (`LICENSE`). Third-party: Qiskit (Apache-2.0), PyTorch (BSD-3), RDKit (BSD-3),
 scikit-learn (BSD-3), PaDEL-Descriptor fingerprints. Data: ChEMBL (CC BY-SA 3.0).
-Q-LINK method credited to its authors; see `docs/CHANGELOG.md` for AI-assistance disclosure.

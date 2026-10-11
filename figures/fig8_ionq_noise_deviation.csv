@@ -1,0 +1,7 @@
+# teammate-reported, from the contributed IonQ remote-simulator run (noise model)
+# 1-sigma shot noise at 1024 shots = 0.0312
+model,mean_abs_delta_Z,above_shot_noise
+"4 qubits, 2 reps",0.0618,True
+"8 qubits, 1 rep",0.0445,True
+"8 qubits, 2 reps",0.0713,True
+"16 qubits, 1 rep",0.0546,True
