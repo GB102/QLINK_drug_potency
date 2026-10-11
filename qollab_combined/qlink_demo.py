@@ -1,0 +1,233 @@
+"""Q-Link Screen -- compound prioritization for HIV-1 protease with a messenger-qubit circuit.
+
+What this run does
+  1. explains the screening problem and the assay budget K
+  2. ranks a held-out pool of real ChEMBL compounds with the trained Q-LINK hybrid (exact expectations)
+  3. compares that ranking with a classical random forest and with random picking
+  4. re-runs a small selectable batch of compounds on the backend you picked in the Select QPU dialog,
+     with the shot count you set, and shows the sampled expectations next to the exact ones
+
+IonQ accepts one circuit per job, so step 4 packs every compound it measures into a single circuit,
+each compound on its own block of qubits. Raise `backend_batch` to measure more (bounded by the
+backend's qubit count); lower `shots` if a noise-model backend runs slowly, since those simulate
+once per shot.
+
+Everything printed under "live backend run" is executed during this run. Nothing is cached.
+Trained weights are loaded from model_qlink.json; the training command is in the project README.
+
+This effort is supported by Qollab & IonQ.
+"""
+import json
+
+from qlink_circuit import (build_from_spec, encode_angles, head, packed_circuit,
+                           z_from_counts)
+
+MODEL_FILE = "model_qlink.json"
+POOL_FILE = "pool.json"
+CLASSICAL_FILE = "classical_scores.json"
+
+
+def load_json(path):
+    with open(path) as f:
+        return json.load(f)
+
+
+def exact_z(bound_circuit, n_data):
+    """<Z_i> on each data qubit from the exact statevector (no shot noise)."""
+    from qiskit.quantum_info import Statevector
+    probs = Statevector(bound_circuit).probabilities_dict()
+    z = [0.0] * n_data
+    for bits, p in probs.items():
+        for i in range(n_data):
+            z[i] += p * (1 - 2 * int(bits[len(bits) - 1 - i]))
+    return z
+
+
+def enrichment(ranked_labels, n_actives, n_pool, k):
+    hits = sum(ranked_labels[:k])
+    base = n_actives / n_pool
+    return hits, hits / k, (hits / k) / base if base else float("nan")
+
+
+def rank_by(scores):
+    """Descending by score, ties broken by pool order (identical rule for every model)."""
+    return sorted(range(len(scores)), key=lambda i: (-scores[i], i))
+
+
+def ef_table(name, scores, labels, ks):
+    n, n_act = len(labels), sum(labels)
+    order = rank_by(scores)
+    lab = [labels[i] for i in order]
+    rows = []
+    for k in ks:
+        hits, prec, ef = enrichment(lab, n_act, n, k)
+        rows.append((name, k, hits, prec, ef, hits / n_act))
+    return rows
+
+
+def print_rows(rows):
+    w = max(len(r[0]) for r in rows) + 2
+    print(f"  {'model':<{w}}{'K':>4}{'hits':>6}{'prec@K':>9}{'EF@K':>7}{'recall':>8}")
+    for name, k, hits, prec, ef, rec in rows:
+        print(f"  {name:<{w}}{k:>4}{hits:>6}{prec:>9.3f}{ef:>7.2f}{rec:>8.3f}")
+
+
+def run(shots: int = 1024, backend_batch: int = 3, budget_percent: int = 10):
+    spec = load_json(MODEL_FILE)
+    pool = load_json(POOL_FILE)
+    classical = load_json(CLASSICAL_FILE)
+    compounds = pool["compounds"]
+    n = len(compounds)
+    labels = [c["potent"] for c in compounds]
+    n_act = sum(labels)
+    k = max(1, round(budget_percent / 100 * n))
+
+    print("=" * 78)
+    print("Q-Link Screen: can a messenger qubit improve compound prioritization?")
+    print("=" * 78)
+    print(f"Target      : {pool['target']}")
+    print("Why it matters: HIV-1 protease cleaves the viral Gag-Pol polyprotein into the proteins a new")
+    print("              virion needs. Block it and the virus still assembles but stays non-infectious,")
+    print("              which is why protease inhibitors are a pillar of antiretroviral therapy.")
+    print(f"Screening   : a wet-lab team can only assay a few compounds. We rank the pool and assay the")
+    print(f"              top {budget_percent}% -- K = {k} of {n} compounds.")
+    print(f"Pool        : {pool['split']}")
+    print(f"Label       : {pool['label']}")
+    print(f"Actives     : {n_act} of {n} compounds ({100 * n_act / n:.1f}%), so random picking recovers")
+    print(f"              about {n_act / n * k:.1f} of them in a batch of {k} (EF = 1.0 by definition).")
+    print()
+    print(f"Model       : {spec['model']} ({spec['n_blocks']} blocks, {spec['n_qubits']} qubits ="
+          f" {spec['n_data_qubits']} data + {spec['n_qubits'] - spec['n_data_qubits']} messenger)")
+    print(f"              trained on the train split only; run id {spec['run_id']}")
+    res = spec.get("resources", {}).get("ionq_native", {})
+    if res:
+        print(f"              compiled for IonQ's native set: depth {res.get('depth')}, "
+              f"{res.get('two_qubit_gates')} two-qubit gates")
+    print()
+
+    qc, xs, ws, = build_from_spec(spec)
+    weights = spec["circuit_weights"]
+    n_data = spec["n_data_qubits"]
+
+    # ---------------- 1. exact ranking of the whole pool (local, no shot noise) ----------------
+    print("-" * 78)
+    print("Step 1  Rank the full pool with exact expectation values (statevector, computed now)")
+    print("-" * 78)
+    q_scores, q_z = [], []
+    for c in compounds:
+        angles = encode_angles(c["features"], spec["pre_w"], spec["pre_b"], spec["angle_scale"])
+        bound = qc.assign_parameters({**{p: float(v) for p, v in zip(xs, angles)},
+                                      **{p: float(v) for p, v in zip(ws, weights)}})
+        z = exact_z(bound, n_data)
+        q_z.append(z)
+        q_scores.append(head(z, spec["post_w"], spec["post_b"])[0])
+
+    c_scores = [classical["scores"].get(c["id"], 0.0) for c in compounds]
+    rng_state = 12345
+    rand_scores = []
+    for _ in range(n):                                  # deterministic LCG, so the run is reproducible
+        rng_state = (1103515245 * rng_state + 12345) % (2 ** 31)
+        rand_scores.append(rng_state / 2 ** 31)
+
+    ks = sorted({max(1, round(p / 100 * n)) for p in (5, budget_percent, 20)})
+    rows = []
+    rows += ef_table(f"Q-LINK hybrid ({spec['model']})", q_scores, labels, ks)
+    rows += ef_table("classical: random forest, full FP", c_scores, labels, ks)
+    rows += ef_table("random picking", rand_scores, labels, ks)
+    print_rows(rows)
+    print()
+
+    # ---------------- 2. the shortlist the model would send to the assay ----------------
+    print("-" * 78)
+    print(f"Step 2  The shortlist: top {k} compounds by Q-LINK score, with their known assay labels")
+    print("-" * 78)
+    order = rank_by(q_scores)[:k]
+    print(f"  {'#':>3}  {'ChEMBL id':<16}{'score':>8}{'pIC50':>8}  {'assay label':<12}")
+    for rank, i in enumerate(order, 1):
+        c = compounds[i]
+        print(f"  {rank:>3}  {c['id']:<16}{q_scores[i]:>8.3f}{c['pIC50']:>8.2f}  "
+              f"{'POTENT' if c['potent'] else 'not potent':<12}")
+    hits = sum(labels[i] for i in order)
+    print(f"  recovered {hits} of {n_act} potent compounds in {k} assay slots "
+          f"(random picking would recover about {n_act / n * k:.1f})")
+    print("  Scores are uncalibrated model outputs used for ranking, not probabilities of activity.")
+    print()
+
+    # ---------------- 3. live backend run ----------------
+    print("-" * 78)
+    print("Step 3  Live backend run: the same quantum inference path, executed now on your backend")
+    print("-" * 78)
+    name = getattr(backend, "name", None)                                        # noqa: F821
+    name = name() if callable(name) else (name or type(backend).__name__)        # noqa: F821
+
+    # Two submission shapes, because the backends differ in what they accept and what they cost.
+    #   IonQ      : one circuit per job, so every compound goes into a single packed circuit.
+    #   local sims: many circuits per run, and Qiskit's BasicSimulator simulates once per shot, so a
+    #               wide packed circuit would cost 2^(extra qubits) more per shot. Keep them separate.
+    per_compound = qc.num_qubits
+    is_ionq = "ionq" in str(name).lower()
+    ceiling = getattr(backend, "num_qubits", None)                               # noqa: F821
+    if not isinstance(ceiling, int) or ceiling < per_compound:
+        ceiling = per_compound
+    batch = max(1, min(backend_batch, n))
+    if is_ionq:
+        batch = min(batch, ceiling // per_compound)
+    picked = rank_by(q_scores)[:batch]
+    angle_rows = [encode_angles(compounds[i]["features"], spec["pre_w"], spec["pre_b"],
+                                spec["angle_scale"]) for i in picked]
+
+    print(f"  backend        : {name}")
+    print(f"  shots          : {shots}")
+    print(f"  compounds      : {batch}")
+    if is_ionq:
+        payload = packed_circuit(qc, xs, ws, angle_rows, weights, n_data)
+        print(f"  submission     : 1 circuit of {payload.num_qubits} qubits "
+              f"({per_compound} per compound, side by side), 1 job")
+        print(f"                   IonQ accepts one circuit per job, so the compounds share a circuit;")
+        print(f"                   the blocks are unentangled, so each shot samples all of them at once.")
+        if batch < min(backend_batch, n):
+            print(f"                   (requested {backend_batch}; backend reports {ceiling} qubits)")
+    else:
+        payload = [packed_circuit(qc, xs, ws, [row], weights, n_data) for row in angle_rows]
+        print(f"  submission     : {batch} circuits of {per_compound} qubits, 1 job")
+    print(f"  results        : newly executed in this run, not cached")
+    print("  running ...")
+    job = backend.run(payload, shots=shots)                                      # noqa: F821
+    result = job.result()
+    counts = result.get_counts()
+
+    print(f"  {'ChEMBL id':<16}{'exact <Z0..Zn>':<34}{'sampled':>9}{'exact':>9}{'|diff|':>8}")
+    max_diff, signed = 0.0, []
+    for j, i in enumerate(picked):
+        # packed: one counts dict, compound j occupying its own block of classical bits
+        # separate: one counts dict per circuit, each with its own 4 bits at offset 0
+        c_j = counts if is_ionq else (counts[j] if isinstance(counts, list) else counts)
+        z_s, total = z_from_counts(c_j, n_data, offset=j * n_data if is_ionq else 0)
+        s_sampled = head(z_s, spec["post_w"], spec["post_b"])[0]
+        s_exact = q_scores[i]
+        max_diff = max(max_diff, abs(s_sampled - s_exact))
+        signed.append(s_sampled - s_exact)
+        zs = " ".join(f"{v:+.2f}" for v in q_z[i])
+        print(f"  {compounds[i]['id']:<16}{zs:<34}{s_sampled:>9.3f}{s_exact:>9.3f}"
+              f"{abs(s_sampled - s_exact):>8.3f}")
+    # On a local ideal simulator the only deviation is finite sampling. IonQ's remote simulators apply a
+    # device noise model, which shrinks |<Z>| toward 0 and so pulls every score toward the head's bias --
+    # a one-directional shift, unlike the symmetric scatter of shot noise. Name the cause correctly.
+    shot_sigma = 1.0 / (shots ** 0.5)
+    mean_signed = sum(signed) / len(signed)
+    if is_ionq:
+        print(f"  largest score shift vs exact: {max_diff:.3f}  (shot noise + IonQ's device noise model;")
+        print(f"                                1-sigma shot noise alone would be about {shot_sigma:.3f})")
+        if mean_signed < -shot_sigma:
+            print(f"  every score moved down (mean {mean_signed:+.3f}): that is the noise model damping")
+            print(f"  the expectation values, not finite sampling. Ranking survives it; calibration does not.")
+    else:
+        print(f"  largest score difference from finite sampling: {max_diff:.3f} at {shots} shots")
+    order_s = [compounds[i]['id'] for i in picked]
+    print(f"  shot-based run reproduced the exact top-{batch} ordering: "
+          f"{order_s == [compounds[i]['id'] for i in rank_by(q_scores)[:batch]]}")
+    print()
+    print("Reproduce the training and the full benchmark with the commands in the project README.")
+    print("A 4+1 qubit circuit is classically simulable: this is an architecture comparison on a real")
+    print("assay benchmark, not a demonstration of computational quantum advantage.")
+    print("This effort is supported by Qollab & IonQ.")
