@@ -111,6 +111,18 @@ accuracy pointed the search away from the best model. Full analysis: **[docs/AUD
 Every plotted value is also written as a `.csv` beside the figure, and every number traces to a run file
 in `results/runs/`.
 
+### The three-class sweep (companion work)
+
+| | |
+|---|---|
+| ![recall by class](figures/recall_scores_multiclass.png) | **Fig 5** — per-class recall for every configuration. This is the view accuracy hides: the active class is recovered at 0.80–0.89 while inactive sits near 0.50 and intermediate swings from 0.44 to 0.67. The mean of the three bars is balanced accuracy, which is what separates these models. |
+| ![sampling simulator](figures/multiclass_benchmark_sampling_sim.png) | **Fig 6** — accuracy against convergence epoch on the built-in sampling simulator. The accuracies here were produced by running the saved weights (4q/2rep 74.42 %, 4q/8rep 80.36 %), and agree with the exact values recomputed in the `hybrids` demo. Read them against the 78.29 % majority-class rate: only 4q/8rep and 8q/1rep clear it. |
+
+Two further figures from the same sweep, `multiclass_benchmark_statevector_sim.png` and
+`multiclass_benchmark_ION_realdevice_sim.png`, are kept in `figures/` but are not shown here — see
+[docs/AUDIT.md](docs/AUDIT.md) for why.
+
+
 ---
 
 ## Run it

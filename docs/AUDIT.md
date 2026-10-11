@@ -89,3 +89,44 @@ exact-expectation runs, so the swing is seed and threshold noise on a saturated 
 
 The v2 results are therefore **not** a reproduction of the original runs. They are new measurements on a
 new split with corrected data handling, and the two are kept apart everywhere in this repository.
+
+
+## 6. The two sweep figures held back from the README
+
+Four figures of the three-class sweep were contributed on 11 Oct. Two are in the README (figs 5 and 6).
+Two are not, for reasons that are checkable against `qollab_combined/single_run.py`, which recomputes
+every model's accuracy from its saved weights.
+
+### `multiclass_benchmark_statevector_sim.png` — three bars disagree with the weights
+
+| configuration | the figure | recomputed from the saved weights | the sampling-simulator figure |
+|---|---|---|---|
+| QML 4q, 2 rep | 80.36 % | **74.42 %** | 74.42 % |
+| QML 4q, 4 rep | 80.36 % | **74.94 %** | 75.19 % |
+| QML 4q, 8 rep | 74.94 % | **80.36 %** | 80.36 % |
+| QML 8q, 1 rep | 79.07 % | 79.07 % | 79.07 % |
+| QML 8q, 4 rep | 77.79 % | 77.78 % | 77.78 % |
+
+The 4-qubit rows carry the classical DNN's 80.36 % where the 2-rep and 4-rep models belong, and the
+4-rep and 8-rep values appear transposed. This is the same defect as §3 item 9: the notebooks printed a
+stale `res`/`best_epoch` from the DNN run, and those printed numbers were charted. The sampling-simulator
+figure, built by executing the weights, has the right values — which is why that one is in the README.
+
+### `multiclass_benchmark_ION_realdevice_sim.png` — two problems
+
+1. **The title says "Quantum Hardware Backend (IonQ forte Enterprise1 36q)".** Every run recorded in
+   this repository reports `backend.name == "ionq_simulator"`, a noise model, and IonQ hardware consumes
+   credits while the remote simulators are free. Unless a hardware job id can be produced, this must be
+   labelled as a simulator. Claiming a hardware run we cannot evidence is the one error in this project
+   that would be fatal with judges.
+2. **The accuracies are 0 % or 100 % because each is measured on one molecule.** `BACKEND_BATCH = 1`, so
+   every bar is a single prediction. Plotted on a 0–120 % axis it reads as some models being perfect and
+   others failing completely; it is one coin flip each. The informative quantity from that run is the one
+   the console prints — mean |ΔZ| against the exact values, which is what shows the noise damping.
+
+Both figures also use two y-axes (accuracy left, epoch or deviation right). Two scales on one plot invite
+a reader to see a relationship between the series that the arbitrary alignment of the axes invented.
+
+**To use them:** regenerate the statevector figure from recomputed accuracies, retitle the IonQ figure as
+a noise-model simulator, and report mean |ΔZ| rather than single-molecule accuracy. The numbers needed
+are printed by `demo="hybrids"` on any backend.
