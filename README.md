@@ -162,6 +162,27 @@ three-class task.
 To reproduce the **original** notebooks instead, open them from `classical/` and `quantum/` in Colab —
 they are unmodified and carry their own saved outputs.
 
+### The companion evaluation (`qollab/ramqolab/`)
+
+A second, self-contained Qollab project that scores the team's seven BasicEntangler hybrids on the
+original three-class test set: exact expectation values for all seven locally, then a live backend run.
+Because IonQ accepts one job per run, it packs models side by side into a single circuit and splits the
+plan into parts — on IonQ, run `part=0` then `part=1` to cover all seven. Its summary prints every
+accuracy against the 0.7829 majority-class rate, and only one of the seven models beats it:
+
+| model | accuracy | vs. answering "active" every time |
+|---|---|---|
+| 4 qubits, 8 reps | 0.8036 | **+0.0207** |
+| 8 qubits, 1 rep | 0.7907 | +0.0078 |
+| 8 qubits, 4 reps | 0.7778 | −0.0051 |
+| 16 qubits, 1 rep | 0.7700 | −0.0129 |
+| 4 qubits, 4 reps | 0.7494 | −0.0335 |
+| 4 qubits, 2 reps | 0.7442 | −0.0387 |
+| 8 qubits, 2 reps | 0.7390 | −0.0439 |
+
+This also re-measures the 4-qubit/2-rep model at **0.7442**, not the 0.8036 printed in its notebook —
+that figure was the classical DNN's, printed from a stale variable (see [AUDIT §3 item 9](docs/AUDIT.md)).
+
 ---
 
 ## How it works
@@ -223,7 +244,8 @@ and the structural properties of each circuit. **9/9 pass.**
 | path | what |
 |---|---|
 | `qlink_screen/` | the pipeline: `data`, `circuits`, `quantum`, `models`, `train`, `baselines`, `metrics`, `resources`, `evaluate`, `figures`, `tests`, `export_qollab` |
-| `qollab/` | the Qollab/IonQ demo project |
+| `qollab/` | the Qollab/IonQ demo project for Q-Link Screen |
+| `qollab/ramqolab/` | companion Qollab project: the team's seven BasicEntangler hybrids (4/8/16 qubits, 1–8 reps) evaluated on the three-class task, exactly and on an IonQ backend |
 | `docs/` | [PREREGISTRATION.md](docs/PREREGISTRATION.md) (protocol, fixed before training), [AUDIT.md](docs/AUDIT.md) (what we found in the originals), [CHANGELOG.md](docs/CHANGELOG.md) (who wrote what), [SUBMISSION.md](docs/SUBMISSION.md) (project page, video script, judging map) |
 | `data/v2/` | curated set, frozen split IDs, fitted transform, provenance |
 | `results/` | one JSON + checkpoint per run, the locked test results, shot evaluation |

@@ -182,6 +182,11 @@ implementation at [AARC-lab/DCAS_2026_QLINK](https://github.com/AARC-lab/DCAS_20
 implement the method faithfully in Qiskit; we copied no code (that repo shows an MIT badge but ships no
 LICENSE file). The sparse-messenger variant, the screening benchmark and this analysis are ours.
 
+The repository also carries a **companion Qollab project**, `qollab/ramqolab/`, which scores the team's
+seven earlier BasicEntangler hybrids (4/8/16 qubits, 1–8 reps) on the three-class task and runs them on an
+IonQ backend. It reaches the same conclusion from the other direction: only one of the seven beats the
+0.7829 majority-class rate, and the best model by accuracy is not the best by balanced accuracy.
+
 Built on our teammate's prior work in the same repository — the ChEMBL pull, the PaDEL fingerprints, the
 classical DNN and the BasicEntangler hybrids. This build added the Q-LINK implementation, a corrected
 dataset and scaffold split, the matched controls, the screening metrics, the gradient and cost analysis,
